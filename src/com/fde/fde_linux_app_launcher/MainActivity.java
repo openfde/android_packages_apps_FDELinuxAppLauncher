@@ -1,9 +1,10 @@
-package com.fde.tools;
+package com.fde.fde_linux_app_launcher;
 
 import android.content.Context;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Toast;
+import com.fde.fde_linux_app_launcher.R;
 
 public class MainActivity extends Activity {
     Context context;
