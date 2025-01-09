@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">在Linux桌面打开</string>
+    <string name="app_name">Linux桌面</string>
     <string name="fde_app_install" >"请安装 "</string>
-    <string name="fde_app_choose" >"请选用fde_utils 打开openFDE "</string>
+    <string name="fde_app_choose" >"当前模式下不支持使用在Linux桌面打开 "</string>
     <string name="fde_desc">FDE(推荐使用)</string>
 </resources>
