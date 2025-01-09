@@ -2,4 +2,5 @@
     <string name="app_name">" Start int the Linux "</string>
     <string name="fde_app_install" >"please install "</string>
     <string name="fde_app_choose" >"please choose fde_utils start openFDE "</string>
+	<string name="fde_desc">FDE(suggest)</string>
 </resources>
