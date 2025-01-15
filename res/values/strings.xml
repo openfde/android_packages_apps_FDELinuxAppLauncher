@@ -3,4 +3,5 @@
     <string name="fde_app_install" >"please install "</string>
     <string name="fde_app_choose" >"The current app not supported in this mode. "</string>
 	<string name="fde_desc">FDE(suggest)</string>
+	<string name="install_x11_tips" >"not install x11 app "</string>
 </resources>

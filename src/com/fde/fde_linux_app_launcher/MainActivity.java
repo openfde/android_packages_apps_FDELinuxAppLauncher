@@ -7,7 +7,8 @@ import android.widget.Toast;
 import com.fde.fde_linux_app_launcher.R;
 import android.content.Intent;
 import android.content.ComponentName;
-
+import android.content.pm.PackageManager;
+import android.util.Log;
 public class MainActivity extends Activity {
     Context context;
 
@@ -36,19 +37,22 @@ public class MainActivity extends Activity {
                             }
                         }).start();
                     } else {
-                        Intent intent = new Intent();
-                        ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.AppListActivity");
-                        intent.setComponent(componentName);
-                        intent.putExtra("App", name);
-                        intent.putExtra("vnc_activity_name", name);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        // runOnUiThread(new Runnable() {
-                        //     @Override
-                        //     public void run() {
-                        //         Toast.makeText(context, R.string.fde_app_choose, Toast.LENGTH_LONG).show();
-                        //     }
-                        // });
+                        if(!isAppInstalled(context,"com.fde.x11")){
+                             runOnUiThread(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     Toast.makeText(context, R.string.install_x11_tips, Toast.LENGTH_LONG).show();
+                                 }
+                             });
+                        }else{
+							Intent intent = new Intent();
+							ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.AppListActivity");
+							intent.setComponent(componentName);
+							intent.putExtra("App", name);
+							intent.putExtra("vnc_activity_name", name);
+							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							startActivity(intent);
+						}
                     }
                     finish();
                 }
@@ -60,4 +64,15 @@ public class MainActivity extends Activity {
         }
 
     }
+
+    public  boolean isAppInstalled(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true; // app installed
+        } catch (PackageManager.NameNotFoundException e) {
+            return false; // app not install
+        }
+    }
+
 }

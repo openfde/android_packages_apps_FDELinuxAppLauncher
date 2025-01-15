@@ -4,4 +4,5 @@
     <string name="fde_app_install" >"请安装 "</string>
     <string name="fde_app_choose" >"当前模式下不支持使用在Linux桌面打开 "</string>
     <string name="fde_desc">FDE(推荐使用)</string>
+	<string name="install_x11_tips" >"请安装X11 应用 "</string>
 </resources>
