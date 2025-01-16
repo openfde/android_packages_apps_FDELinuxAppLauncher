@@ -24,6 +24,7 @@ public class MainActivity extends Activity {
             String[] arrParams = openParams.split("###");
             String name = arrParams[0].trim().replaceAll("%[FfUu]", "");
             String exec = arrParams[1].trim().replaceAll("%[FfUu]", "");
+			Log.i("FDE","name: "+name +",exec: "+exec);
 
             new Thread(new Runnable() {
                 @Override
@@ -46,9 +47,10 @@ public class MainActivity extends Activity {
                              });
                         }else{
 							Intent intent = new Intent();
-							ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.AppListActivity");
+							ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.FakeListActivity");
 							intent.setComponent(componentName);
 							intent.putExtra("App", name);
+							intent.putExtra("Path", exec);
 							intent.putExtra("vnc_activity_name", name);
 							intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							startActivity(intent);
