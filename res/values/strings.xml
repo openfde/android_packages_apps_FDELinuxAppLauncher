@@ -3,5 +3,10 @@
     <string name="fde_app_install" >"please install "</string>
     <string name="fde_app_choose" >"The current app not supported in this mode. "</string>
 	<string name="fde_desc">FDE(suggest)</string>
-	<string name="install_x11_tips" >"not install x11 app "</string>
+	<string name="install_x11_tips" >"not install FDE x11 server "</string>
+    <string name="install" >"install"</string>
+    <string name="update" >"update"</string>
+    <string name="cancel" >"cancel"</string>
+    <string name="downloading" >"downloading "</string>
+    <string name="verison_need_update_tips" >"The version needs to be updated. "</string>
 </resources>

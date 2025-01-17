@@ -11,6 +11,7 @@ android_app {
         "com.google.android.material_material",
         "androidx.legacy_legacy-support-v13",
 		"gson",
+        "drc_static_libs"
     ],
 
     certificate: "shared",

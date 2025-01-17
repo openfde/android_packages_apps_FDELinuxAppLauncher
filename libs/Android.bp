@@ -17,5 +17,14 @@ java_import {
     name: "gson",
     jars: ["gson-2.10.jar"],
     host_supported: true,
-    sdk_version: "current",
+    sdk_version: "system_current",
+}
+
+java_import {
+    name: "drc_static_libs",
+    jars: [
+        "okhttp-3.12.1.jar",
+        "okio-1.15.0.jar",
+    ],
+    sdk_version: "system_current"
 }
