@@ -1,0 +1,27 @@
+android_app {
+    name: "FDELinuxAppLauncher",
+
+    srcs: [
+        "src/**/*.java",
+        "src-bind/**/*.java",
+    ],
+
+    static_libs: [
+	    "androidx.appcompat_appcompat",
+        "com.google.android.material_material",
+        "androidx.legacy_legacy-support-v13",
+		"gson",
+        "drc_net_libs"
+    ],
+
+    certificate: "shared",
+    product_specific: true,
+    privileged: true,
+
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+
+    sdk_version: "system_current",
+    min_sdk_version: "21",
+}

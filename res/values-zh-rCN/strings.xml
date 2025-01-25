@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">Linux App Launcher</string>
+    <string name="fde_app_install" >"请安装 "</string>
+    <string name="fde_app_choose" >"当前模式下不支持使用在Linux桌面打开 "</string>
+    <string name="fde_desc">FDE(推荐使用)</string>
+	<string name="install_x11_tips" >"请安装FDE x11 server "</string>
+
+    <string name="install" >"安装"</string>
+    <string name="update" >"更新"</string>
+    <string name="cancel" >"取消"</string>
+    <string name="downloading" >"下载中 "</string>
+    <string name="verison_need_update_tips" >"FDE x11 server版本需更新 "</string>
+    <string name="network_tips" >"网络不可用"</string>
+</resources>
