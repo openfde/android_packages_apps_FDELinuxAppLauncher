@@ -11,4 +11,6 @@
     <string name="cancel" >"取消"</string>
     <string name="downloading" >"下载中 "</string>
     <string name="verison_need_update_tips" >"FDE x11 server版本需更新 "</string>
+    <string name="network_tips" >"网络不可用"</string>
+    <string name="x11_not_run">X11 server 没有运行,请稍后</string>
 </resources>

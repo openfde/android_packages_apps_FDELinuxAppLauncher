@@ -22,6 +22,7 @@ import okhttp3.ResponseBody;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import android.os.Looper;
 
 
 public class MainActivity extends Activity {
@@ -68,20 +69,32 @@ public class MainActivity extends Activity {
                 public void run() {
                     String result = NetUtils.getFdeMode();
                     if ("shell".equals(result)) {
-                        NetUtils.gotoLinuxApp(name, exec);
+                        NetUtils.gotoLinuxApp(name, exec,"0");
                         finish();
                     } else {
                         if(!isAppInstalled || isUpdate){
                             parseGitXml( context,downloadJson);
                         }else{
-                            Intent intent = new Intent();
-                            ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.FakeListActivity");
-                            intent.setComponent(componentName);
-                            intent.putExtra("App", name);
-                            intent.putExtra("Path", exec);
-                            intent.putExtra("vnc_activity_name", name);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            // Intent intent = new Intent();
+                            // ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.FakeListActivity");
+                            // intent.setComponent(componentName);
+                            // intent.putExtra("App", name);
+                            // intent.putExtra("Path", exec);
+                            // intent.putExtra("vnc_activity_name", name);
+                            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            // startActivity(intent);
+                            // finish();
+                            if(Utils.isXserviceRunning(context)){
+                                NetUtils.gotoLinuxApp(name, exec,"1001");
+                            }else{
+                                Log.i("FDE","fde x11 is not running... ");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(context, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+                                    }
+                                });    
+                            }
                             finish();
                         }
                     }
@@ -89,7 +102,7 @@ public class MainActivity extends Activity {
             }).start();
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.fde_app_choose, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, R.string.fde_app_choose, Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -97,54 +110,62 @@ public class MainActivity extends Activity {
 
 
     public  void parseGitXml(Context context , String url) { 
-        OkHttpClient client = new OkHttpClient();
-        // 创建 Request 请求
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        // 发起请求并处理响应
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful() && response.body() != null) {
-                String responseBody = response.body().string();
-                Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
-                // 使用 Gson 解析
-                Gson gson = new Gson();
-                List<Map<String, Object>> list = gson.fromJson(responseBody, listType);
-                if(list !=null){
-                    String primaryUrl = list.stream()
-                                .filter(map -> map.get("name").toString().contains("FDE x11"))
-                                .map(map -> map.get("primaryUrl").toString())
-                                .findFirst()
-                                .orElse(null);
-
-                    Log.i("FDE","primaryUrl: " + primaryUrl + ",isUpdate: "+isUpdate + ", isAppInstalled:"+isAppInstalled);   
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(!isAppInstalled){
-                                DlgUpdate dlgUpdate = new DlgUpdate(MainActivity.this,getString(R.string.install), getString(R.string.install_x11_tips), primaryUrl);
-                                if (!dlgUpdate.isShowing()) {
-                                    dlgUpdate.show();
-                                }
-                            }else{
-                                DlgUpdate dlgUpdate = new DlgUpdate(MainActivity.this,getString(R.string.update), getString(R.string.verison_need_update_tips), primaryUrl);
-                                if (!dlgUpdate.isShowing()) {
-                                    dlgUpdate.show();
-                                }
-                            } 
-                        }
-                    });    
-                }else{
+        //if not has network
+        if (!Utils.isNetworkAvailable(MainActivity.this)) {
+            Looper.prepare();
+            Toast.makeText(context, R.string.network_tips, Toast.LENGTH_SHORT).show();
+            finish();
+            Looper.loop();
+        }else{
+            OkHttpClient client = new OkHttpClient();
+            // create Request 
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+    
+            // send request
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseBody = response.body().string();
+                    Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
+                    // user Gson parse
+                    Gson gson = new Gson();
+                    List<Map<String, Object>> list = gson.fromJson(responseBody, listType);
+                    if(list !=null){
+                        String primaryUrl = list.stream()
+                                    .filter(map -> map.get("name").toString().contains("FDE x11"))
+                                    .map(map -> map.get("primaryUrl").toString())
+                                    .findFirst()
+                                    .orElse(null);
+    
+                        Log.i("FDE","primaryUrl: " + primaryUrl + ",isUpdate: "+isUpdate + ", isAppInstalled:"+isAppInstalled);   
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(!isAppInstalled){
+                                    DlgUpdate dlgUpdate = new DlgUpdate(MainActivity.this,getString(R.string.install), getString(R.string.install_x11_tips), primaryUrl);
+                                    if (!dlgUpdate.isShowing()) {
+                                        dlgUpdate.show();
+                                    }
+                                }else{
+                                    DlgUpdate dlgUpdate = new DlgUpdate(MainActivity.this,getString(R.string.update), getString(R.string.verison_need_update_tips), primaryUrl);
+                                    if (!dlgUpdate.isShowing()) {
+                                        dlgUpdate.show();
+                                    }
+                                } 
+                            }
+                        });    
+                    }else{
+                        finish();
+                    }
+                } else {
+                    Log.e("FDE","Request failed: " + response.code());
                     finish();
                 }
-            } else {
-                Log.e("FDE","Request failed: " + response.code());
+            } catch (Exception e) {
+                e.printStackTrace();
                 finish();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            finish();
         }
     }
 

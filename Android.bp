@@ -14,7 +14,7 @@ android_app {
         "drc_static_libs"
     ],
 
-    certificate: "shared",
+    certificate: "platform",
     product_specific: true,
     privileged: true,
     required: ["privapp_whitelist_com.android.fde_linux_app_launcher"],
