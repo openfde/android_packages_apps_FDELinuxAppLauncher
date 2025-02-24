@@ -28,7 +28,7 @@ import android.os.Looper;
 public class MainActivity extends Activity {
     Context context;
     String targetPackage = "com.fde.x11";
-    String targetVersion = "1.2.3";
+    String targetVersion = "1.3.0";
     // String downloadPath = "https://gitee.com/openfde/FDE-X11/releases/download/1.2.3/fde_x11-1.2.3-release.apk";
     String downloadJson = "https://gitee.com/openfde/provision/releases/download/1.3.2/apps.json";
 
