@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
 	 package="com.fde.fde_linux_app_launcher"
-     android:sharedUserId="android.uid.system" 
      android:versionCode="10731"
      android:versionName="1.7.31">
     <uses-permission android:name="android.permission.INTERNET" />

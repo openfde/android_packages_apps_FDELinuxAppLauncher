@@ -84,17 +84,17 @@ public class MainActivity extends Activity {
                             // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             // startActivity(intent);
                             // finish();
-                            if(Utils.isXserviceRunning(context)){
+                            // if(Utils.isXserviceRunning(context)){
                                 NetUtils.gotoLinuxApp(name, exec,"1001");
-                            }else{
-                                Log.i("FDE","fde x11 is not running... ");
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(context, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
-                                    }
-                                });    
-                            }
+                            // }else{
+                            //     Log.i("FDE","fde x11 is not running... ");
+                            //     runOnUiThread(new Runnable() {
+                            //         @Override
+                            //         public void run() {
+                            //             Toast.makeText(context, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+                            //         }
+                            //     });    
+                            // }
                             finish();
                         }
                     }
