@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
                 public void run() {
                     String result = NetUtils.getFdeMode();
                     if ("shell".equals(result)) {
-                        NetUtils.gotoLinuxApp(name, exec,"0");
+                        NetUtils.gotoLinuxApp(name, exec,"0",MainActivity.this);
                         finish();
                     } else {
                         if(!isAppInstalled || isUpdate){
@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
                             // startActivity(intent);
                             // finish();
                             // if(Utils.isXserviceRunning(context)){
-                                NetUtils.gotoLinuxApp(name, exec,"1001");
+                                NetUtils.gotoLinuxApp(name, exec,"1001",MainActivity.this);
                             // }else{
                             //     Log.i("FDE","fde x11 is not running... ");
                             //     runOnUiThread(new Runnable() {

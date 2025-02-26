@@ -14,6 +14,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import android.widget.Toast;
+import android.app.Activity;
 
 
 public class NetUtils {
@@ -68,7 +70,7 @@ public class NetUtils {
     }
 
 
-    public static String gotoLinuxApp(String name, String exec,String display) {
+    public static String gotoLinuxApp(String name, String exec,String display,Activity activity) {
         try {
             // 目标URL
             String targetURL = "http://127.0.0.1:18080/api/v1/xserver";
@@ -99,9 +101,17 @@ public class NetUtils {
             Log.i("bella", "gotoLinuxApp Response Code: " + responseCode);
             // 根据需要处理响应内容
             // ...
-
             // 关闭连接
             connection.disconnect();
+            if(responseCode == 428){
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+                    }
+                });    
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
