@@ -85,7 +85,14 @@ public class MainActivity extends Activity {
                             // startActivity(intent);
                             // finish();
                             // if(Utils.isXserviceRunning(context)){
+                            String cpuAbiString =Utils.getSystemProperty("ro.product.cpu.abi", ""); 
+                            Log.i("FDE","cpuAbiString  "+cpuAbiString);
+                            if(cpuAbiString.contains("x86") || cpuAbiString.contains("X86")){
+                                Toast.makeText(context, R.string.x86_tips, Toast.LENGTH_SHORT).show();
+                            }else{
                                 NetUtils.gotoLinuxApp(name, exec,"1001",MainActivity.this);
+                            }
+                                
                             // }else{
                             //     Log.i("FDE","fde x11 is not running... ");
                             //     runOnUiThread(new Runnable() {
