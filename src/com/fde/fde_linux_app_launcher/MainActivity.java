@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import android.os.Looper;
-
+import android.view.Window;
 
 public class MainActivity extends Activity {
     Context context;
@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+		setWindowDecorationStatus(Window.WINDOW_DECORATION_FORCE_HIDE);
         try {
             String openParams = getIntent().getStringExtra("openParams");
             String[] arrParams = openParams.split("###");
