@@ -142,7 +142,7 @@ public class NetUtils {
             }.getType());
             Map<String, Object> mpData = (Map<String, Object>) mpRes.get("Data");
             return  mpData.get("FDEMode").toString();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

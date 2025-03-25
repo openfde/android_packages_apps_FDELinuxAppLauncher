@@ -118,3 +118,14 @@
 -keepclassmembers class * {
   @com.google.common.annotations.VisibleForTesting *;
 }
+
+
+# 保留泛型签名
+-keepattributes Signature
+
+# 保留 TypeToken 类及其子类
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+
+# 保留被序列化的实体类
+-keep class com.example.yourpackage.** { *; }
