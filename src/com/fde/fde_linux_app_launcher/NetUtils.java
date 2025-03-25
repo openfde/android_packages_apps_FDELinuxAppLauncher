@@ -14,6 +14,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import android.widget.Toast;
+import android.app.Activity;
 
 
 public class NetUtils {
@@ -67,7 +69,7 @@ public class NetUtils {
     }
 
 
-    public static String gotoLinuxApp(String name, String exec) {
+    public static String gotoLinuxApp(String name, String exec,String display,Activity activity) {
         try {
             // 目标URL
             String targetURL = "http://127.0.0.1:18080/api/v1/xserver";
@@ -86,7 +88,7 @@ public class NetUtils {
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             // POST参数
-            String postParameters = "App=" + name + "&Path=" + exec + "&Display=:0";
+            String postParameters = "App=" + name + "&Path=" + exec + "&Display=:"+display;
             Log.i("bella", "gotoLinuxApp postParameters: " + postParameters);
             // 获取输出流并写入参数
             try (OutputStream os = connection.getOutputStream()) {
@@ -101,6 +103,14 @@ public class NetUtils {
 
             // 关闭连接
             connection.disconnect();
+            if(responseCode == 428){
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+                    }
+                });    
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

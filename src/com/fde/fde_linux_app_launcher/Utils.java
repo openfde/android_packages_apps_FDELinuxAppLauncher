@@ -2,6 +2,7 @@ package com.fde.fde_linux_app_launcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -14,8 +15,27 @@ import android.net.Uri;
 import androidx.core.content.FileProvider;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
+import android.app.ActivityManager;
+import android.text.TextUtils;
+import java.lang.reflect.Method;
 
 public class Utils {
+    public static final String X11_PACKAGE_NAME = "com.fde.x11";
+    public static final String X11_SERVICE_NAME = "XWindowService";
+    public static final String X11_SERVICE_FULL_NAME = X11_PACKAGE_NAME + "." + X11_SERVICE_NAME;
+
+    public static String getSystemProperty(String key, String defaultValue) {
+        String value = defaultValue;
+        try {
+            Class<?> systemProperties = Class.forName("android.os.SystemProperties");
+            Method get = systemProperties.getMethod("get", String.class, String.class);
+            value = (String) get.invoke(null, key, defaultValue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
     public static int compareVersionNames(String version1, String version2) {
         String[] parts1 = version1.split("\\.");
         String[] parts2 = version2.split("\\.");
@@ -60,6 +80,15 @@ public class Utils {
             return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         }
         return false;
+    }
+
+    public static boolean isXserviceRunning(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> runningServices = am.getRunningServices(Integer.MAX_VALUE);
+
+        return runningServices.stream()
+                .anyMatch(info -> TextUtils.equals(X11_PACKAGE_NAME, info.service.getPackageName()) &&
+                        TextUtils.equals(X11_SERVICE_FULL_NAME, info.service.getClassName()));
     }
     
 }

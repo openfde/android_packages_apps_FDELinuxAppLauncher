@@ -28,7 +28,7 @@ import android.os.Looper;
 public class MainActivity extends Activity {
     Context context;
     String targetPackage = "com.fde.x11";
-    String targetVersion = "1.2.3";
+    String targetVersion = "1.3.0";
     // String downloadPath = "https://gitee.com/openfde/FDE-X11/releases/download/1.2.3/fde_x11-1.2.3-release.apk";
     String downloadJson = "https://gitee.com/openfde/provision/releases/download/1.3.2/apps.json";
 
@@ -45,56 +45,67 @@ public class MainActivity extends Activity {
         context = this;
         try {
             String openParams = getIntent().getStringExtra("openParams");
-            if("lock".equals(openParams) || "logout".equals(openParams) || "restart".equals(openParams) || "poweroff".equals(openParams)){                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        DeviceUtils.gotoPower(openParams);
-                        finish();
-                    }
-                }).start();  
+            String[] arrParams = openParams.split("###");
+            name = arrParams[0].trim().replaceAll("%[FfUu]", "");
+            exec = arrParams[1].trim().replaceAll("%[FfUu]", "");
+			Log.i("FDE","name: "+name +",exec: "+exec);
+
+            isAppInstalled = Utils.isAppInstalled(context,targetPackage);
+            if(isAppInstalled){
+                PackageManager pm = context.getPackageManager();
+                PackageInfo packageInfo = pm.getPackageInfo(targetPackage, 0);
+                String versionName = packageInfo.versionName; // 
+                int versionCode = packageInfo.versionCode;   // 
+                Log.i("FDE","versionName: "+versionName +",versionCode: "+versionCode);
+                isUpdate = Utils.compareVersionNames(versionName, targetVersion) < 0 ;
             }else{
-                String[] arrParams = openParams.split("###");
-                name = arrParams[0].trim().replaceAll("%[FfUu]", "");
-                exec = arrParams[1].trim().replaceAll("%[FfUu]", "");
-                Log.i("FDE","name: "+name +",exec: "+exec);
-    
-                isAppInstalled = Utils.isAppInstalled(context,targetPackage);
-                if(isAppInstalled){
-                    PackageManager pm = context.getPackageManager();
-                    PackageInfo packageInfo = pm.getPackageInfo(targetPackage, 0);
-                    String versionName = packageInfo.versionName; // 
-                    int versionCode = packageInfo.versionCode;   // 
-                    Log.i("FDE","versionName: "+versionName +",versionCode: "+versionCode);
-                    isUpdate = Utils.compareVersionNames(versionName, targetVersion) < 0 ;
-                }else{
-                    Log.i("FDE","fde x11 is not install ");
-                }
-           
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String result = NetUtils.getFdeMode();
-                        if ("shell".equals(result)) {
-                            NetUtils.gotoLinuxApp(name, exec);
-                            finish();
-                        } else {
-                            if(!isAppInstalled || isUpdate){
-                                parseGitXml( context,downloadJson);
+                Log.i("FDE","fde x11 is not install ");
+            }
+       
+        
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String result = NetUtils.getFdeMode();
+                    if ("shell".equals(result)) {
+                        NetUtils.gotoLinuxApp(name, exec,"0",MainActivity.this);
+                        finish();
+                    } else {
+                        if(!isAppInstalled || isUpdate){
+                            parseGitXml( context,downloadJson);
+                        }else{
+                            // Intent intent = new Intent();
+                            // ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.FakeListActivity");
+                            // intent.setComponent(componentName);
+                            // intent.putExtra("App", name);
+                            // intent.putExtra("Path", exec);
+                            // intent.putExtra("vnc_activity_name", name);
+                            // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            // startActivity(intent);
+                            // finish();
+                            // if(Utils.isXserviceRunning(context)){
+                            String cpuAbiString =Utils.getSystemProperty("ro.product.cpu.abi", ""); 
+                            Log.i("FDE","cpuAbiString  "+cpuAbiString);
+                            if(cpuAbiString.contains("x86") || cpuAbiString.contains("X86")){
+                                Toast.makeText(context, R.string.x86_tips, Toast.LENGTH_SHORT).show();
                             }else{
-                                Intent intent = new Intent();
-                                ComponentName componentName = new ComponentName("com.fde.x11", "com.fde.x11.FakeListActivity");
-                                intent.setComponent(componentName);
-                                intent.putExtra("App", name);
-                                intent.putExtra("Path", exec);
-                                intent.putExtra("vnc_activity_name", name);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                finish();
+                                NetUtils.gotoLinuxApp(name, exec,"1001",MainActivity.this);
                             }
+                                
+                            // }else{
+                            //     Log.i("FDE","fde x11 is not running... ");
+                            //     runOnUiThread(new Runnable() {
+                            //         @Override
+                            //         public void run() {
+                            //             Toast.makeText(context, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+                            //         }
+                            //     });    
+                            // }
+                            finish();
                         }
                     }
-                }).start();
-            }
+                }
+            }).start();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(context, R.string.fde_app_choose, Toast.LENGTH_SHORT).show();

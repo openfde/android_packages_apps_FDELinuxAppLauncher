@@ -10,4 +10,6 @@
     <string name="downloading" >"downloading "</string>
     <string name="verison_need_update_tips" >"The version needs to be updated. "</string>
     <string name="network_tips">The network is unavailable.</string>
+    <string name="x11_not_run">X11 server is not running,please wait</string>
+    <string name="x86_tips">X11 does not support x86 architecture. </string>
 </resources>
