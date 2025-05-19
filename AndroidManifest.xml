@@ -32,7 +32,14 @@
             android:theme="@style/DialogActivityTheme"
 	    android:excludeFromRecents="true"
             android:exported="true">
-            <intent-filter>
+            <layout
+                android:defaultHeight="1dp"
+                android:defaultWidth="1dp"
+                android:minHeight="1dp"
+                android:minWidth="1dp"
+                />
+
+	<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
