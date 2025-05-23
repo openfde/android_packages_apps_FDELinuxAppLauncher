@@ -30,14 +30,8 @@
             android:label="@string/fde_desc"
             android:description="@string/fde_desc"
             android:theme="@style/DialogActivityTheme"
-	    android:excludeFromRecents="true"
+	        android:excludeFromRecents="true"
             android:exported="true">
-            <layout
-                android:defaultHeight="1dp"
-                android:defaultWidth="1dp"
-                android:minHeight="1dp"
-                android:minWidth="1dp"
-                />
 
 	<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
