@@ -46,6 +46,14 @@ public class MainActivity extends Activity {
         context = this;
         try {
             String openParams = getIntent().getStringExtra("openParams");
+            if(openParams.contains("waydroid")){
+                String packageName = openParams.split("###")[1];
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(launchIntent);
+                finish();
+                return;
+            }
             String[] arrParams = openParams.split("###");
             name = arrParams[0].trim().replaceAll("%[FfUu]", "");
             exec = arrParams[1].trim().replaceAll("%[FfUu]", "");
