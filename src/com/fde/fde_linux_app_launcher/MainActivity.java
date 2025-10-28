@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     String targetPackage = "com.fde.x11";
     String targetVersion = "1.3.0";
     // String downloadPath = "https://gitee.com/openfde/FDE-X11/releases/download/1.2.3/fde_x11-1.2.3-release.apk";
-    String downloadJson = "https://gitee.com/openfde/provision/releases/download/1.3.2/apps.json";
+    String downloadJson = "https://gitee.com/openfde/provision/releases/download/14_2.0.1/14apps.json";
 
     String name ;
     String exec ;
