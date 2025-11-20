@@ -48,6 +48,7 @@ public class MainActivity extends Activity {
 
         try {
             String openParams = getIntent().getStringExtra("openParams");
+			 Log.i("FDE","openParams "+openParams);
 			if("lock".equals(openParams) || "logout".equals(openParams) || "restart".equals(openParams) || "poweroff".equals(openParams)){               
 				new Thread(new Runnable() {
 						@Override
@@ -56,7 +57,14 @@ public class MainActivity extends Activity {
 							finish();
 						}
 			    }).start();  
-			}else{
+			}else  if(openParams.contains("waydroid")){
+                String packageName = openParams.split("###")[1];
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(packageName);
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(launchIntent);
+                finish();
+                return;
+            }else{
 				String[] arrParams = openParams.split("###");
                 name = arrParams[0].trim().replaceAll("%[FfUu]", "");
                 exec = arrParams[1].trim().replaceAll("%[FfUu]", "");
@@ -80,7 +88,17 @@ public class MainActivity extends Activity {
                     public void run() {
                         String result = NetUtils.getFdeMode();
                         if ("shell".equals(result)) {
-                            NetUtils.gotoLinuxApp(name, exec,"0",MainActivity.this);
+                            if("open_terminal".equals(exec)){
+                                if("".equals(name)){
+                                    NetUtils.gotoTerminalApp("0", true,"");
+                                }else if(name.contains("volumes")){//linux path
+                                    NetUtils.gotoTerminalApp("0", false,name);
+                                }else{//android path
+                                    NetUtils.gotoTerminalApp("0", true,name);    
+                                }
+                            }else{
+                                NetUtils.gotoLinuxApp(name, exec,"0",MainActivity.this);
+                            }        
                             finish();
                         } else {
                             if(!isAppInstalled || isUpdate){
@@ -101,7 +119,17 @@ public class MainActivity extends Activity {
                                 if(cpuAbiString.contains("x86") || cpuAbiString.contains("X86")){
                                     Toast.makeText(context, R.string.x86_tips, Toast.LENGTH_SHORT).show();
                                 }else{
-                                    NetUtils.gotoLinuxApp(name, exec,"1001",MainActivity.this);
+                                    if("open_terminal".equals(exec)){
+                                        if("".equals(name)){
+                                            NetUtils.gotoTerminalApp("1001", true,"");
+                                        }else if(name.contains("volumes")){//linux path
+                                            NetUtils.gotoTerminalApp("1001", false,name);
+                                        }else{//android path
+                                            NetUtils.gotoTerminalApp("1001", true,name);    
+                                        }
+                                    }else{
+                                         NetUtils.gotoLinuxApp(name, exec,"1001",MainActivity.this);
+                                    } 
                                 }
                                     
                                 // }else{

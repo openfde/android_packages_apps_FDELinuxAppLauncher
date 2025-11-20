@@ -16,13 +16,16 @@ import java.util.List;
 import java.util.Map;
 import android.widget.Toast;
 import android.app.Activity;
+import java.io.OutputStreamWriter;
 
 
 public class NetUtils {
+    private static final String ADDRESS = "http://127.0.0.1:18080";
+
     public static String getLinuxApp() {
         try {
             URL url = new URL(
-                    "http://127.0.0.1:18080/api/v1/apps?page=" + 1 + "&page_size=" + 100);
+                    ADDRESS+"/api/v1/apps?page=" + 1 + "&page_size=" + 100);
             HttpURLConnection connection = (HttpURLConnection) url
                     .openConnection();
 
@@ -71,37 +74,37 @@ public class NetUtils {
 
     public static String gotoLinuxApp(String name, String exec,String display,Activity activity) {
         try {
-            // 目标URL
-            String targetURL = "http://127.0.0.1:18080/api/v1/xserver";
-            // 创建URL对象
+            // Target URL
+            String targetURL = ADDRESS+"/api/v1/xserver";
+            // Create URL Object
             URL url = new URL(targetURL);
-            // 打开连接
+            // open a connection
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            // 设置请求方法为POST
+            // Set the request method to POST
             connection.setRequestMethod("POST");
 
-            // 设置允许输出
+            // Set to allow output
             connection.setDoOutput(true);
 
-            // 设置请求属性，例如Content-Type
+            // Set request properties，eg Content-Type
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-            // POST参数
+            // POST parameters
             String postParameters = "App=" + name + "&Path=" + exec + "&Display=:"+display;
             Log.i("bella", "gotoLinuxApp postParameters: " + postParameters);
-            // 获取输出流并写入参数
+            // Retrieve output stream and write parameters
             try (OutputStream os = connection.getOutputStream()) {
                 os.write(postParameters.getBytes(StandardCharsets.UTF_8));
             }
 
-            // 获取响应码
+            // Obtain response code
             int responseCode = connection.getResponseCode();
             Log.i("bella", "gotoLinuxApp Response Code: " + responseCode);
-            // 根据需要处理响应内容
+            // Process response content as needed
             // ...
 
-            // 关闭连接
+            // Close connection
             connection.disconnect();
             if(responseCode == 428){
                 activity.runOnUiThread(new Runnable() {
@@ -117,11 +120,65 @@ public class NetUtils {
         return null;
     }
 
+    public static void gotoTerminalApp(String Display, boolean IsAndroidFS,String WorkingPath) {
+        try {
+            // Target URL
+            String targetURL = ADDRESS+"/api/v1/xserver/terminal";
+            // Create URL Object
+            URL url = new URL(targetURL);
+            // open a connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Set the request method to POST
+            connection.setRequestMethod("POST");
+
+            // Set to allow output
+            connection.setDoOutput(true);
+
+            // Set the request method to POST，eg Content-Type
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            String jsonBody = String.format("""
+                {
+                    "Display": ":%s",
+                    "IsAndroidFS": %s,
+                    "WorkingPath": "%s"
+                }
+                """, Display, IsAndroidFS, WorkingPath);
+
+            Log.i("FDE", "gotoTerminalApp targetURL: " + targetURL + ",jsonBody: "+jsonBody);
+             // 发送 JSON 数据
+            try (OutputStream os = connection.getOutputStream();
+                OutputStreamWriter osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)) {
+                osw.write(jsonBody);
+                osw.flush();
+            }
+
+            // Obtain response code
+            int responseCode = connection.getResponseCode();
+            String message = connection.getResponseMessage();
+            Log.i("FDE", "gotoTerminalApp Response Code: " + responseCode + ",message: "+message);
+            // Process response content as needed
+            // ...
+            // Close connection
+            connection.disconnect();
+            // if(responseCode == 428){
+            //     activity.runOnUiThread(new Runnable() {
+            //         @Override
+            //         public void run() {
+            //             Toast.makeText(activity, R.string.x11_not_run, Toast.LENGTH_SHORT).show(); 
+            //         }
+            //     });    
+            // }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static String getFdeMode() {
         try {
             URL url = new URL(
-                    "http://127.0.0.1:18080/api/v1/fde_mode");
+                    ADDRESS+"/api/v1/fde_mode");
             HttpURLConnection connection = (HttpURLConnection) url
                     .openConnection();
 
